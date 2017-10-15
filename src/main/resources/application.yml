@@ -1,0 +1,54 @@
+# Tomcat
+server:
+    tomcat:
+        uri-encoding: UTF-8
+        max-threads: 1000
+        min-spare-threads: 30
+    port: 8888
+    connection-timeout: 5000
+    context-path:
+    ssl:
+       key-store: classpath:star.linxiong.me.jks
+       key-store-password: 123456
+
+spring:
+    # 环境
+    profiles:
+      active: dev
+    jackson:
+      time-zone: GMT+8
+    # 文件上传配置
+    http:
+        multipart:
+          max-file-size: 100MB
+          max-request-size: 100MB
+          enabled: true
+    resources: # 指定静态资源的路径
+        static-locations: classpath:/static/,classpath:/views/,classpath:/resources,classpath:/META-INF/resources
+    redis:
+        open: false # 是否开启redis缓存
+        database: 0
+        host: localhost
+        port: 6379
+        password:
+        timeout: 6000 # 连接超时时长(毫秒)
+        pool:
+          max-active: 1000
+          max-wait: -1
+          max-idle: 10
+          min-idle: 5
+    cache:
+        # 使用缓存类型为 jcache 默认实现是 ehcache3 如果要使用redis缓存，把这里修改一下就行了
+        type: jcache
+        jcache:
+          config: classpath:ehcache3.xml
+
+# 自定义配置
+template:
+    # 前后端分离，通过token认证
+    jwt:
+        # 加密秘钥
+        secret: 123456
+        # token 有效时长 7天 单位秒
+        expire: 604800
+        header: token
