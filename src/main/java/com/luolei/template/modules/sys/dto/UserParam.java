@@ -28,6 +28,8 @@ public class UserParam {
     @NotBlank(groups = {LoginGroup.class, UpdateGroup.class, AddGroup.class})
     private String password;
 
+    private String refreshToken;
+
     private String email;
 
     private String mobile;

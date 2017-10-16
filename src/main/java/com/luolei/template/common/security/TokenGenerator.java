@@ -24,9 +24,10 @@ public class TokenGenerator {
 
     private String secret;
     private long expire;
+    private long rememberExpire;
 
     /**
-     * 生成jwt token
+     * 生成 accessToken
      */
     public String generateToken(long userId) {
         Date nowDate = new Date();
@@ -34,9 +35,22 @@ public class TokenGenerator {
         Date expireDate = new Date(nowDate.getTime() + expire * 1000);
 
         return Jwts.builder()
-                .setHeaderParam("typ", "JWT")
                 .setSubject(userId+"")
                 .setIssuedAt(nowDate)
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
+
+    /**
+     * 生成 refreshToken
+     */
+    public String generateRefreshToken(long userId) {
+        Date now = new Date();
+        Date expireDate = new Date(now.getTime() + rememberExpire * 1000);
+        return Jwts.builder()
+                .setSubject(userId + "")
+                .setIssuedAt(now)
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();

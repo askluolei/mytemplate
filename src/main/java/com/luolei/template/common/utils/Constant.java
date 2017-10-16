@@ -14,6 +14,8 @@ public class Constant {
 
     public static final String TOKEN_HEADER_KEY = "token";
 
+    public static final String REQUEST_PLATFORM = "platform";
+
     public enum ScheduleStatus {
         /**
          * 正常

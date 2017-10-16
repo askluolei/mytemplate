@@ -49,6 +49,8 @@ template:
     jwt:
         # 加密秘钥
         secret: 123456
-        # token 有效时长 7天 单位秒
-        expire: 604800
+        # accessToken 有效时长 30分钟 单位秒
+        expire: 1800
         header: token
+        # refreshToken 有效时长 7天 单位秒
+        rememberExpire: 604800

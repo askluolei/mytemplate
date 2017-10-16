@@ -7,11 +7,17 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.luolei.template.common.security.MyCorsFilter;
+import com.luolei.template.common.support.AccessTokenHandlerMethodArgumentResolver;
+import com.luolei.template.common.support.LoginUserHandlerMethodArgumentResolver;
+import com.luolei.template.common.support.RequestIpHandlerMethodArgumentResolver;
+import com.luolei.template.common.support.RequestPlatformHandlerMethodArgumentResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.DispatcherType;
@@ -56,5 +62,26 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    @Autowired
+    private AccessTokenHandlerMethodArgumentResolver accessTokenHandlerMethodArgumentResolver;
+
+    @Autowired
+    private LoginUserHandlerMethodArgumentResolver loginUserHandlerMethodArgumentResolver;
+
+    @Autowired
+    private RequestPlatformHandlerMethodArgumentResolver requestPlatformHandlerMethodArgumentResolver;
+
+    @Autowired
+    private RequestIpHandlerMethodArgumentResolver requestIpHandlerMethodArgumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        super.addArgumentResolvers(argumentResolvers);
+        argumentResolvers.add(accessTokenHandlerMethodArgumentResolver);
+        argumentResolvers.add(loginUserHandlerMethodArgumentResolver);
+        argumentResolvers.add(requestPlatformHandlerMethodArgumentResolver);
+        argumentResolvers.add(requestIpHandlerMethodArgumentResolver);
     }
 }

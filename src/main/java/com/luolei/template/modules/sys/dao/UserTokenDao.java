@@ -1,7 +1,11 @@
 package com.luolei.template.modules.sys.dao;
 
+import com.luolei.template.modules.sys.entity.UserEntity;
 import com.luolei.template.modules.sys.entity.UserTokenEntity;
+import com.luolei.template.modules.sys.entityenum.AuthPlatform;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * @author luolei
@@ -10,5 +14,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserTokenDao extends JpaRepository<UserTokenEntity, Long> {
 
-    UserTokenEntity findByToken(String token);
+    UserTokenEntity findByAccessToken(String accessToken);
+
+    UserTokenEntity findByRefreshToken(String refreshToken);
+
+    List<UserTokenEntity> findAllByUserAndAuthPlatform(UserEntity user, AuthPlatform authPlatform);
 }
