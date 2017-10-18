@@ -1,5 +1,6 @@
 package com.luolei.template.datasources;
 
+import com.luolei.template.common.jpa.BaseDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -28,7 +29,7 @@ import java.util.Map;
 @EnableTransactionManagement
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactorySecond",
         transactionManagerRef = "transactionManagerSecond",
-        basePackages = {"com.luolei.template.modules.job.dao"})//设置dao（repo）所在位置
+        basePackages = {"com.luolei.template.modules.job.dao"}, repositoryBaseClass = BaseDaoImpl.class)//设置dao（repo）所在位置
 public class JpaDynamicDataSourceSecond {
 
     @Autowired

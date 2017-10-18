@@ -1,5 +1,6 @@
 package com.luolei.template.modules.sys.dao;
 
+import com.luolei.template.common.jpa.BaseDao;
 import com.luolei.template.modules.sys.entity.UserEntity;
 import com.luolei.template.modules.sys.entity.UserTokenEntity;
 import com.luolei.template.modules.sys.entityenum.AuthPlatform;
@@ -12,7 +13,7 @@ import java.util.List;
  * @email askluolei@gmail.com
  * @date 2017/10/14 0:26
  */
-public interface UserTokenDao extends JpaRepository<UserTokenEntity, Long> {
+public interface UserTokenDao extends BaseDao<UserTokenEntity> {
 
     UserTokenEntity findByAccessToken(String accessToken);
 

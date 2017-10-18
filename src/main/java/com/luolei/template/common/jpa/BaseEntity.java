@@ -2,7 +2,6 @@ package com.luolei.template.common.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,10 +16,10 @@ import java.time.LocalDateTime;
  * @email askluolei@gmail.com
  * @date 2017/10/13 0:14
  */
-@MappedSuperclass
 @Getter
 @Setter
-@EntityListeners({AuditingEntityListener.class})
+@MappedSuperclass
+@EntityListeners({AuditingEntityListener.class,JpaCallbackListener.class})
 public class BaseEntity implements Serializable{
 
     /**
@@ -38,8 +37,7 @@ public class BaseEntity implements Serializable{
      */
     @Version
     @Column(name = "version", nullable=false)
-    @ColumnDefault("1")
-    private Integer version;
+    private Integer version = 1;
 
     /**
      * 使用 @CreatedDate @LastModifiedDate 注解 记得要在配置类上使用 @EnableJpaAuditing 开启这个功能
@@ -56,5 +54,10 @@ public class BaseEntity implements Serializable{
     @LastModifiedDate
     private LocalDateTime lastOperateTime;
 
-
+    /**
+     * 删除标记，支持逻辑删除
+     * 使用逻辑删除，关联关系，都要配置成双向的
+     */
+    @Column(name = "deleted")
+    private Boolean deleted = false;
 }
