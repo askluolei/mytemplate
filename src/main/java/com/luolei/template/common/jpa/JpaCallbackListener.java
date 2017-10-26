@@ -1,20 +1,14 @@
 package com.luolei.template.common.jpa;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Objects;
 
-import javax.persistence.EntityManager;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 
 import com.luolei.template.common.utils.SpringContextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * jpa 回调
@@ -24,12 +18,76 @@ import com.luolei.template.common.utils.SpringContextUtils;
  */
 public class JpaCallbackListener {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    /**
+     * 解除外键关联
+     * @param entity
+     */
+    private void dislink(BaseEntity entity) {
+        for (Field field : entity.getClass().getDeclaredFields()) {
+            try {
+                if (field.isAnnotationPresent(OneToOne.class)) {
+                    OneToOne oneToOne = field.getAnnotation(OneToOne.class);
+                    String mapperBy = oneToOne.mappedBy();
+                    if (!mapperBy.isEmpty()) {
+                        //存在　mapperBy，则代表外键在field这个实体类中
+                        //肯定不为null　否则　hibernate　启动不了
+                        Field mapperField = field.getType().getDeclaredField(mapperBy);
+                        //权限
+                        mapperField.setAccessible(true);
+                        field.setAccessible(true);
+                        Object fieldVal = field.get(entity);
+                        if (Objects.nonNull(fieldVal)) {
+                            //断开外键
+                            mapperField.set(fieldVal, null);
+                        }
+                    }
+                } else if (field.isAnnotationPresent(OneToMany.class)) {
+                    OneToMany oneToMany = field.getAnnotation(OneToMany.class);
+                    String mapperBy = oneToMany.mappedBy();
+                    if (!mapperBy.isEmpty()) {
+                        field.setAccessible(true);
+                        Collection<?> fieldVals = (Collection<?>) field.get(entity);
+                        if (Objects.nonNull(fieldVals)) {
+                            for (Object fieldVal : fieldVals) {
+                                Field mapperField = fieldVal.getClass().getDeclaredField(mapperBy);
+                                mapperField.setAccessible(true);
+                                mapperField.set(fieldVal, null);
+                            }
+                        }
+                    }
+                } else if (field.isAnnotationPresent(ManyToMany.class)) {
+                    ManyToMany manyToMany = field.getAnnotation(ManyToMany.class);
+                    String mapperBy = manyToMany.mappedBy();
+                    if (!mapperBy.isEmpty()) {
+                        field.setAccessible(true);
+                        Collection<?> fieldVals = (Collection<?>) field.get(entity);
+                        if (Objects.nonNull(fieldVals)) {
+                            for (Object fieldVal: fieldVals) {
+                                Field mapperField = fieldVal.getClass().getDeclaredField(mapperBy);
+                                mapperField.setAccessible(true);
+                                Collection<?> toUpdates = (Collection<?>) mapperField.get(fieldVal);
+                                if (Objects.nonNull(toUpdates)) {
+                                    toUpdates.remove(entity);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("删除前的处理异常", e);
+            }
+        }
+    }
+
     /**
      * 新增记录后触发
      * @param entity
      */
     @PostPersist
     public void postPersist(BaseEntity entity) {
+        logger.debug("**************** --postPermist-- ****************");
     }
 
     /**
@@ -38,6 +96,7 @@ public class JpaCallbackListener {
      */
     @PostRemove
     public void postRemove(BaseEntity entity) {
+        logger.debug("**************** --postRemove-- ****************");
     }
 
     /**
@@ -46,6 +105,7 @@ public class JpaCallbackListener {
      */
     @PostUpdate
     public void postUpdate(BaseEntity entity) {
+        logger.debug("**************** --postUpdate-- ****************");
     }
 
     /**
@@ -54,6 +114,7 @@ public class JpaCallbackListener {
      */
     @PostLoad
     public void postLoad(BaseEntity entity) {
+        logger.debug("**************** --postLoad-- ****************");
     }
 
     /**
@@ -62,6 +123,7 @@ public class JpaCallbackListener {
      */
     @PrePersist
     public void prePersist(BaseEntity entity) {
+        logger.debug("**************** --prePersist-- ****************");
     }
 
     /**
@@ -70,6 +132,8 @@ public class JpaCallbackListener {
      */
     @PreRemove
     public void preRemove(BaseEntity entity) {
+        logger.debug("**************** --preRemove-- ****************");
+        dislink(entity);
     }
 
     /**
@@ -79,31 +143,10 @@ public class JpaCallbackListener {
      */
     @PreUpdate
     public void preUpdate(BaseEntity entity) {
-        System.out.println("--- preUpdate ---" + entity.getClass().getSimpleName());
-        EntityManager entityManager = SpringContextUtils.getBean(EntityManager.class);
+        logger.debug("**************** --preUpdate-- ****************");
         if (entity.getDeleted()) {
-            //软删除
-            for (Field field : entity.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(OneToMany.class)) {
-                    //存在OneToMany在上面
-                    field.setAccessible(true);
-                    try {
-                        Iterable<BaseEntity> entities = (Iterable<BaseEntity>) field.get(entity);
-                        if (Objects.nonNull(entities)) {
-                            for (BaseEntity en : entities) {
-                                en.setDeleted(true);
-                                entityManager.merge(en);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (field.isAnnotationPresent(OneToOne.class)) {
-
-                }
-            }
+            //逻辑删除，断开外键
+            dislink(entity);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.luolei.template.modules.job.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luolei.template.common.jpa.BaseEntity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -18,6 +20,7 @@ import javax.persistence.*;
 @Table(name = "t_schedule_job_log")
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class ScheduleJobLogEntity extends BaseEntity {
 
     /**
@@ -42,7 +45,8 @@ public class ScheduleJobLogEntity extends BaseEntity {
     /**
      * 对应的定时任务
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "job_id")
+    @JsonIgnoreProperties("logs")
     private ScheduleJobEntity job;
 }

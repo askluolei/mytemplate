@@ -1,12 +1,13 @@
 package com.luolei.template.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luolei.template.common.jpa.BaseEntity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * 权限
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 @Table(name = "t_permission")
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true, exclude = {"roles"})
 public class PermissionEntity extends BaseEntity {
 
     @Column(name = "tf_permission", length = 32, unique = true, nullable = false)
@@ -25,4 +27,8 @@ public class PermissionEntity extends BaseEntity {
 
     @Column(name = "tf_remark")
     private String remark;
+
+    @ManyToMany(mappedBy = "permissions", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnoreProperties("permissions")
+    private List<RoleEntity> roles;
 }

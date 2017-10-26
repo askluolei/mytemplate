@@ -1,13 +1,14 @@
 package com.luolei.template.modules.job.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luolei.template.common.jpa.BaseEntity;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * 定时器
@@ -20,6 +21,7 @@ import javax.persistence.Table;
 @Table(name = "t_schedule_job")
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true, exclude = {"logs"})
 public class ScheduleJobEntity extends BaseEntity {
 
     private static final long serialVersionUID = 2956280592023358352L;
@@ -65,4 +67,8 @@ public class ScheduleJobEntity extends BaseEntity {
      */
     @Column(name = "remark")
     private String remark;
+
+    @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnoreProperties("job")
+    private List<ScheduleJobLogEntity> logs;
 }

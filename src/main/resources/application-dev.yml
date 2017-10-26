@@ -1,7 +1,8 @@
 spring:
     jpa:
         hibernate:
-          ddl-auto: create-drop
+            ddl-auto: create-drop
+        open-in-view: true
     datasource:
         # 使用的数据库是啥 主要用来判断使用哪个schema-{platform}.sql
         platform: h2

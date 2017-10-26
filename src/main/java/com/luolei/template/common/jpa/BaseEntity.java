@@ -1,5 +1,6 @@
 package com.luolei.template.common.jpa;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 @MappedSuperclass
 @EntityListeners({AuditingEntityListener.class,JpaCallbackListener.class})
 public class BaseEntity implements Serializable{

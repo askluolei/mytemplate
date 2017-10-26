@@ -51,7 +51,7 @@ public class OAuth2Realm extends AuthorizingRealm {
         Set<String> permissions = new HashSet<>();
         user.getRoles().forEach(role -> {
             roles.add(role.getRoleName());
-            role.getPermsiions().forEach(p -> {
+            role.getPermissions().forEach(p -> {
                 permissions.add(p.getPermission());
             });
         });
@@ -66,7 +66,7 @@ public class OAuth2Realm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String accessToken = (String) authenticationToken.getPrincipal();
-        UserTokenEntity token = tokenDao.findByToken(accessToken);//需要检查这里的过期时间吗?
+        UserTokenEntity token = tokenDao.findByAccessToken(accessToken);//需要检查这里的过期时间吗?
         if (Objects.isNull(token)) {
             throw new AuthenticationException("认证失败");
         }

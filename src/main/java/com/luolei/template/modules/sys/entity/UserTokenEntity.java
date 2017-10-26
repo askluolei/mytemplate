@@ -3,6 +3,7 @@ package com.luolei.template.modules.sys.entity;
 import com.luolei.template.common.jpa.BaseEntity;
 import com.luolei.template.modules.sys.entityenum.AuthPlatform;
 import com.luolei.template.modules.sys.entityenum.AuthType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Table(name = "t_user_token")
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class UserTokenEntity extends BaseEntity {
 
     /**
@@ -50,12 +52,14 @@ public class UserTokenEntity extends BaseEntity {
     /**
      * 认证方式
      */
+    @Enumerated(EnumType.STRING)
     private AuthType authType;
 
     /**
      * 认证平台
      * PC，android等
      */
+    @Enumerated(EnumType.STRING)
     private AuthPlatform authPlatform;
 
     /**
