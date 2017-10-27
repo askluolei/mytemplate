@@ -43,6 +43,13 @@ public class UserTokenEntity extends BaseEntity {
     private LocalDateTime expireTime;
 
     /**
+     * 随机数
+     * 每个token内都生成一个随机数
+     */
+    @Column(name = "token_random", unique = true)
+    private Long random;
+
+    /**
      * 关联sessionID
      * 预留
      */

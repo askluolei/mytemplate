@@ -1,6 +1,7 @@
 package com.luolei.template.config;
 
 import com.luolei.template.common.security.PasswordEncoder;
+import com.luolei.template.common.utils.Sequence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +20,10 @@ public class CustomConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder(strength);
+    }
+
+    @Bean
+    public Sequence sequence() {
+        return new Sequence(0, 0);
     }
 }
