@@ -2,7 +2,6 @@ spring:
     jpa:
         hibernate:
             ddl-auto: create-drop
-            enable_lazy_load_no_trans: true
         open-in-view: true
     datasource:
         # 使用的数据库是啥 主要用来判断使用哪个schema-{platform}.sql
@@ -10,14 +9,9 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: org.h2.Driver
         druid:
-            first: # 数据源1
-                url: jdbc:h2:mem:template1;USER=sa;PASSWORD=123
-                username: sa
-                password: 123
-            second: # 数据源2
-                url: jdbc:h2:mem:template2;USER=sa;PASSWORD=456
-                username: sa
-                password: 456
+            url: jdbc:h2:mem:template1;USER=sa;PASSWORD=123
+            username: sa
+            password: 123
             initial-size: 10
             max-active: 100
             min-idle: 10

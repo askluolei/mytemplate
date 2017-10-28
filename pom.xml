@@ -36,7 +36,8 @@
         <lombok.version>1.16.18</lombok.version>
         <guava.version>23.0</guava.version>
         <hutool.version>3.1.1</hutool.version>
-        <swagger.version>2.7.0</swagger.version>
+        <!-- 注意swagger的版本 2.5 - 2.6.1 其他版本在某些情况下会有栈溢出error-->
+        <swagger.version>2.6.1</swagger.version>
         <guava.version>23.0</guava.version>
     </properties>
 
@@ -125,6 +126,11 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

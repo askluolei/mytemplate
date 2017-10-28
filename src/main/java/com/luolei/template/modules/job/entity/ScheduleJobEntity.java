@@ -1,11 +1,11 @@
 package com.luolei.template.modules.job.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luolei.template.common.jpa.BaseEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
@@ -59,8 +59,7 @@ public class ScheduleJobEntity extends BaseEntity {
      * 任务状态  0：正常  1：暂停
      */
     @Column(name = "tf_status")
-    @ColumnDefault("0")
-    private Integer status;
+    private Integer status = 0;
 
     /**
      * 备注

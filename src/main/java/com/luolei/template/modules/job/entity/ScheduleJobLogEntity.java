@@ -45,7 +45,7 @@ public class ScheduleJobLogEntity extends BaseEntity {
     /**
      * 对应的定时任务
      */
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     @JoinColumn(name = "job_id")
     @JsonIgnoreProperties("logs")
     private ScheduleJobEntity job;

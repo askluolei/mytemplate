@@ -10,7 +10,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * @author luolei
@@ -50,7 +53,7 @@ public class BaseEntity implements Serializable{
     private LocalDateTime createTime;
 
     /**
-     * 上传操作时间
+     * 上次操作时间
      */
     @Column(name = "last_operate_time", nullable = false)
     @LastModifiedDate
@@ -62,4 +65,77 @@ public class BaseEntity implements Serializable{
      */
     @Column(name = "deleted")
     private Boolean deleted = false;
+
+//    @PreRemove
+//    public void preRemove(BaseEntity entity) {
+//        dislink(entity);
+//    }
+//
+//    @PreUpdate
+//    public void preUpdate(BaseEntity entity) {
+//        if (entity.getDeleted()) {
+//            //逻辑删除，断开外键
+//            dislink(entity);
+//        }
+//    }
+//
+//    /**
+//     * 解除外键关联
+//     * @param entity
+//     */
+//    private void dislink(BaseEntity entity) {
+//        for (Field field : entity.getClass().getDeclaredFields()) {
+//            try {
+//                if (field.isAnnotationPresent(OneToOne.class)) {
+//                    OneToOne oneToOne = field.getAnnotation(OneToOne.class);
+//                    String mapperBy = oneToOne.mappedBy();
+//                    if (!mapperBy.isEmpty()) {
+//                        //存在　mapperBy，则代表外键在field这个实体类中
+//                        //肯定不为null　否则　hibernate　启动不了
+//                        Field mapperField = field.getType().getDeclaredField(mapperBy);
+//                        //权限
+//                        mapperField.setAccessible(true);
+//                        field.setAccessible(true);
+//                        Object fieldVal = field.get(entity);
+//                        if (Objects.nonNull(fieldVal)) {
+//                            //断开外键
+//                            mapperField.set(fieldVal, null);
+//                        }
+//                    }
+//                } else if (field.isAnnotationPresent(OneToMany.class)) {
+//                    OneToMany oneToMany = field.getAnnotation(OneToMany.class);
+//                    String mapperBy = oneToMany.mappedBy();
+//                    if (!mapperBy.isEmpty()) {
+//                        field.setAccessible(true);
+//                        Collection<?> fieldVals = (Collection<?>) field.get(entity);
+//                        if (Objects.nonNull(fieldVals)) {
+//                            for (Object fieldVal : fieldVals) {
+//                                Field mapperField = fieldVal.getClass().getDeclaredField(mapperBy);
+//                                mapperField.setAccessible(true);
+//                                mapperField.set(fieldVal, null);
+//                            }
+//                        }
+//                    }
+//                } else if (field.isAnnotationPresent(ManyToMany.class)) {
+//                    ManyToMany manyToMany = field.getAnnotation(ManyToMany.class);
+//                    String mapperBy = manyToMany.mappedBy();
+//                    if (!mapperBy.isEmpty()) {
+//                        field.setAccessible(true);
+//                        Collection<?> fieldVals = (Collection<?>) field.get(entity);
+//                        if (Objects.nonNull(fieldVals)) {
+//                            for (Object fieldVal: fieldVals) {
+//                                Field mapperField = fieldVal.getClass().getDeclaredField(mapperBy);
+//                                mapperField.setAccessible(true);
+//                                Collection<?> toUpdates = (Collection<?>) mapperField.get(fieldVal);
+//                                if (Objects.nonNull(toUpdates)) {
+//                                    toUpdates.remove(entity);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            } catch (Exception e) {
+//            }
+//        }
+//    }
 }

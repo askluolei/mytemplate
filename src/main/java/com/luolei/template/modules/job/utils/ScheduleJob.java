@@ -1,6 +1,6 @@
 package com.luolei.template.modules.job.utils;
 
-import com.alibaba.fastjson.JSON;
+import com.luolei.template.common.utils.JsonUtils;
 import com.luolei.template.common.utils.SpringContextUtils;
 import com.luolei.template.modules.job.dao.ScheduleJobLogDao;
 import com.luolei.template.modules.job.entity.ScheduleJobEntity;
@@ -31,7 +31,7 @@ public class ScheduleJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        ScheduleJobEntity scheduleJob = JSON.parseObject(context.getMergedJobDataMap().getString(ScheduleJobEntity.JOB_PARAM_KEY), ScheduleJobEntity.class);
+        ScheduleJobEntity scheduleJob = JsonUtils.fromJson(context.getMergedJobDataMap().getString(ScheduleJobEntity.JOB_PARAM_KEY), ScheduleJobEntity.class);
         ScheduleJobLogEntity log = new ScheduleJobLogEntity();
         log.setJob(scheduleJob);
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.luolei.template.common.security.MyCorsFilter;
 import com.luolei.template.common.support.AccessTokenHandlerMethodArgumentResolver;
@@ -60,9 +61,14 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         //放到第一个
         converters.add(0, jackson2HttpMessageConverter);
 
+        //java8 的时间日期api
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.registerModule(new JavaTimeModule());
+
+        //支持hibernate的延时加载，如果到返回的时候，还没有触发延时加载，那么就返回为null
+        objectMapper.registerModule(new Hibernate5Module());
     }
+
 
     @Autowired
     private AccessTokenHandlerMethodArgumentResolver accessTokenHandlerMethodArgumentResolver;

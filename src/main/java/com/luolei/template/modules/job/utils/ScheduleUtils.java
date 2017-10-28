@@ -1,8 +1,8 @@
 package com.luolei.template.modules.job.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.luolei.template.common.exception.TException;
 import com.luolei.template.common.utils.Constant;
+import com.luolei.template.common.utils.JsonUtils;
 import com.luolei.template.modules.job.entity.ScheduleJobEntity;
 import org.quartz.*;
 
@@ -55,7 +55,7 @@ public class ScheduleUtils {
             CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(scheduleJob.getId())).withSchedule(scheduleBuilder).build();
 
             //放入参数，运行时的方法可以获取
-            jobDetail.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, JSON.toJSONString(scheduleJob));
+            jobDetail.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, JsonUtils.toJson(scheduleJob));
 
             scheduler.scheduleJob(jobDetail, trigger);
 
@@ -86,7 +86,7 @@ public class ScheduleUtils {
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
 
             //参数
-            trigger.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, JSON.toJSONString(scheduleJob));
+            trigger.getJobDataMap().put(ScheduleJobEntity.JOB_PARAM_KEY, JsonUtils.toJson(scheduleJob));
 
             scheduler.rescheduleJob(triggerKey, trigger);
 
@@ -107,7 +107,7 @@ public class ScheduleUtils {
         try {
             //参数
             JobDataMap dataMap = new JobDataMap();
-            dataMap.put(ScheduleJobEntity.JOB_PARAM_KEY, scheduleJob);
+            dataMap.put(ScheduleJobEntity.JOB_PARAM_KEY, JsonUtils.toJson(scheduleJob));
 
             scheduler.triggerJob(getJobKey(scheduleJob.getId()), dataMap);
         } catch (SchedulerException e) {

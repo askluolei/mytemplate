@@ -14,7 +14,7 @@ server:
 spring:
     # 环境
     profiles:
-      active: dev
+      active: single
     jackson:
       time-zone: GMT+8
     # 文件上传配置

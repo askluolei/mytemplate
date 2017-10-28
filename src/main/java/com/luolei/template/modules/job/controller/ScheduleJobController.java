@@ -2,16 +2,16 @@ package com.luolei.template.modules.job.controller;
 
 import com.luolei.template.common.api.R;
 import com.luolei.template.modules.job.dao.ScheduleJobDao;
-import com.luolei.template.modules.job.dto.ScheduleJobParam;
 import com.luolei.template.modules.job.entity.ScheduleJobEntity;
 import com.luolei.template.modules.job.service.ScheduleJobService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
+import com.luolei.template.modules.job.vo.ScheduleJobView;
+import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 定时任务
@@ -20,9 +20,9 @@ import java.util.List;
  * @email askluolei@gmail.com
  * @date 2017/10/14 14:19
  */
-@Api(tags = {"定时任务"})
-@RestControllerAdvice
-@RequestMapping(path = "/sys/schedule")
+@Api(value = "/schedulejob", description = "定时任务")
+@RestController
+@RequestMapping(path = "/sys/schedule", produces = {"application/json; charset=UTF-8"})
 public class ScheduleJobController {
 
     @Autowired
@@ -31,30 +31,34 @@ public class ScheduleJobController {
     @Autowired
     private ScheduleJobService jobService;
 
-    @ApiOperation(value = "定时任务列表", notes = "获取定时任务列表")
-    @GetMapping("/list")
-    public R list(ScheduleJobParam scheduleJob) {
-        return R.ok(jobService.query(scheduleJob));
+    private ScheduleJobEntity convert(ScheduleJobView jobView) {
+        ScheduleJobEntity jobEntity = new ScheduleJobEntity();
+        BeanUtils.copyProperties(jobView, jobEntity);
+        return jobEntity;
+    }
+
+    @ApiOperation(value = "定时任务列表", notes = "获取定时任务列表", nickname = "定时任务列表")
+    @GetMapping
+    public R list(ScheduleJobView jobView, @PathVariable(name = "jobId", required = false) Long id) {
+        return R.ok().with("jobs", jobService.query(jobView));
     }
 
     @ApiOperation(value = "定时任务信息", notes = "根据主键获取定时任务信息")
     @GetMapping("/{jobId}")
     public R info(@PathVariable("jobId") Long id) {
-        return R.ok(jobDao.findOne(id));
+        return R.ok().with("job", jobDao.findOne(id));
     }
 
     @ApiOperation(value = "添加定时任务", notes = "新增一个定时任务，并立即启动")
-    @ApiImplicitParam(name = "scheduleJob", value = "定时任务实体", required = true)
     @PostMapping
-    public R save(@RequestBody  ScheduleJobEntity scheduleJob) {
-        return R.ok(jobService.save(scheduleJob));
+    public R save(@RequestBody ScheduleJobView jobView) {
+        return R.ok().with("job", jobService.save(convert(jobView)));
     }
 
     @ApiOperation(value = "修改定时任务", notes = "根据主键修改定时任务")
-    @ApiImplicitParam(name = "scheduleJob", value = "定时任务实体", required = true)
     @PutMapping
-    public R update(@RequestBody  ScheduleJobEntity scheduleJob) {
-        return R.ok(jobService.update(scheduleJob));
+    public R update(@RequestBody ScheduleJobView jobView) {
+        return R.ok().with("job", jobService.update(convert(jobView)));
     }
 
     @ApiOperation(value = "删除定时任务", notes = "根据主键删除定时任务")

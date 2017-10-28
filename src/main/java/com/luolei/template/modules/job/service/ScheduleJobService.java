@@ -1,11 +1,11 @@
 package com.luolei.template.modules.job.service;
 
 import com.luolei.template.common.utils.Constant;
+import com.luolei.template.common.utils.JpaUtils;
 import com.luolei.template.modules.job.dao.ScheduleJobDao;
-import com.luolei.template.modules.job.dto.ScheduleJobParam;
 import com.luolei.template.modules.job.entity.ScheduleJobEntity;
-import com.luolei.template.modules.job.utils.ScheduleJob;
 import com.luolei.template.modules.job.utils.ScheduleUtils;
+import com.luolei.template.modules.job.vo.ScheduleJobView;
 import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import java.util.Objects;
  * @date 2017/10/14 13:33
  */
 @Service
+@Transactional(rollbackFor = Throwable.class)
 public class ScheduleJobService {
 
     @Autowired
@@ -47,7 +48,7 @@ public class ScheduleJobService {
         }
     }
 
-    public Page<ScheduleJobEntity> query(ScheduleJobParam scheduleJob) {
+    public Page<ScheduleJobEntity> query(ScheduleJobView scheduleJob) {
         int page = 0;
         int pageSize = 10;
         if (Objects.nonNull(scheduleJob.getPage())) {
@@ -74,7 +75,6 @@ public class ScheduleJobService {
         return jobDao.findAll(example, new PageRequest(page, pageSize, new Sort("id")));
     }
 
-    @Transactional
     public ScheduleJobEntity save(ScheduleJobEntity scheduleJob) {
         scheduleJob.setStatus(Constant.ScheduleStatus.NORMAL.getValue());
         scheduleJob = jobDao.save(scheduleJob);
@@ -82,22 +82,22 @@ public class ScheduleJobService {
         return scheduleJob;
     }
 
-    @Transactional
     public ScheduleJobEntity update(ScheduleJobEntity scheduleJob) {
         ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
         scheduleJob = jobDao.save(scheduleJob);
         return scheduleJob;
     }
 
-    @Transactional
     public void deleteBatch(List<Long> ids) {
         for (Long id : ids) {
             ScheduleUtils.deleteScheduleJob(scheduler, id);
         }
-        jobDao.deleteInBatch(jobDao.findAll(ids));
+        List<ScheduleJobEntity> jobs = jobDao.findAll(ids);
+//        JpaUtils.dislink(jobs);
+//        jobs = jobDao.save(jobs);
+        jobDao.delete(jobs);
     }
 
-    @Transactional
     public List<ScheduleJobEntity> updateBatch(List<ScheduleJobEntity> scheduleJobs) {
         return jobDao.save(scheduleJobs);
     }
@@ -110,7 +110,6 @@ public class ScheduleJobService {
         }
     }
 
-    @Transactional
     public void pause(List<Long> ids) {
         List<ScheduleJobEntity> scheduleJobs = jobDao.findAll(ids);
         for (ScheduleJobEntity job : scheduleJobs) {
@@ -120,7 +119,6 @@ public class ScheduleJobService {
         updateBatch(scheduleJobs);
     }
 
-    @Transactional
     public void resume(List<Long> ids) {
         List<ScheduleJobEntity> scheduleJobs = jobDao.findAll(ids);
         for (ScheduleJobEntity job : scheduleJobs) {

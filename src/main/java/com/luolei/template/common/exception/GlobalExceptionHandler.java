@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public R handleTException(TException e, HttpServletRequest request) {
         logger.error("uri:" + request.getRequestURI(), e);
-        return R.error(RestError.INTERVAL_ERROR, e.getMessage());
+        return R.error(RestError.INTERVAL_ERROR).with("exception", e.getClass().getName()).with("message", e.getMessage());
     }
 
     /**
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R handlerMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         logger.error("uri:" + request.getRequestURI(), e);
-        return R.error(RestError.INTERVAL_ERROR, e.getMessage());
+        return R.error(RestError.INTERVAL_ERROR).with("exception", e.getClass().getName()).with("message", e.getMessage());
     }
 
     /**
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public R handleAll(Exception e, HttpServletRequest request) {
         logger.error("uri:" + request.getRequestURI(), e);
-        return R.error(RestError.INTERVAL_ERROR, e.getMessage());
+        return R.error(RestError.INTERVAL_ERROR).with("exception", e.getClass().getName()).with("message", e.getMessage());
     }
 
 

@@ -1,5 +1,6 @@
 package com.luolei.template.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -21,6 +22,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
+    @Bean
     public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
@@ -36,7 +38,6 @@ public class SwaggerConfig {
                 .description("基于spirng-boot 的快速开发脚手架，集成一些常用功能")
                 .termsOfServiceUrl("https://github.com/askluolei")
                 .version("1.0-SNAPSHOT")
-                .contact(new Contact("luolei", "https://github.com/askluolei", "askluolei@gmail.com"))
                 .license("MIT")
                 .build();
     }
