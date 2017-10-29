@@ -2,13 +2,8 @@ package com.luolei.template.config;
 
 import com.luolei.template.common.security.OAuth2Filter;
 import com.luolei.template.common.security.OAuth2Realm;
-import org.apache.shiro.session.mgt.SessionManager;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -21,6 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.Filter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * shiro 配置
@@ -113,4 +111,6 @@ public class ShiroConfig {
         registration.addUrlPatterns("/*");
         return registration;
     }
+
+
 }

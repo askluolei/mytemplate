@@ -54,3 +54,6 @@ template:
         header: token
         # refreshToken 有效时长 7天 单位秒
         rememberExpire: 604800
+    permission:
+        # 是否需要初始化权限信息
+        init: true

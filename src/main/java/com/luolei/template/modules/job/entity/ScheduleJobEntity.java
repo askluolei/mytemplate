@@ -1,6 +1,5 @@
 package com.luolei.template.modules.job.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.luolei.template.common.jpa.BaseEntity;
 import lombok.EqualsAndHashCode;

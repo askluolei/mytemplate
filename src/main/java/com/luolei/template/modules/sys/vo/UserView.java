@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author luolei
@@ -30,6 +31,8 @@ public class UserView extends BaseViewObject {
     private String refreshToken;
 
     private String email;
+
+    private List<RoleView> roles;
 
     private String mobile;
     private Integer status;

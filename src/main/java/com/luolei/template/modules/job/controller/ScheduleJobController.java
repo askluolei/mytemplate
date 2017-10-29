@@ -9,6 +9,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,8 +39,13 @@ public class ScheduleJobController {
     }
 
     @ApiOperation(value = "定时任务列表", notes = "获取定时任务列表", nickname = "定时任务列表")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "beanName", value = "bean名字", dataType = "String", paramType = "queryPermission", example = "test"),
+        @ApiImplicitParam(name = "methodName", value = "方法名", dataType = "String", paramType = "queryPermission", example = "test"),
+        @ApiImplicitParam(name = "status", value = "状态", dataType = "int", paramType = "queryPermission", defaultValue = "0", example = "0", allowableValues = "0, 1")
+    })
     @GetMapping
-    public R list(ScheduleJobView jobView, @PathVariable(name = "jobId", required = false) Long id) {
+    public R list(@ApiIgnore ScheduleJobView jobView) {
         return R.ok().with("jobs", jobService.query(jobView));
     }
 
@@ -51,45 +57,45 @@ public class ScheduleJobController {
 
     @ApiOperation(value = "添加定时任务", notes = "新增一个定时任务，并立即启动")
     @PostMapping
-    public R save(@RequestBody ScheduleJobView jobView) {
-        return R.ok().with("job", jobService.save(convert(jobView)));
+    public R save(@RequestBody ScheduleJobView job) {
+        return R.ok().with("job", jobService.save(convert(job)));
     }
 
     @ApiOperation(value = "修改定时任务", notes = "根据主键修改定时任务")
     @PutMapping
-    public R update(@RequestBody ScheduleJobView jobView) {
-        return R.ok().with("job", jobService.update(convert(jobView)));
+    public R update(@RequestBody ScheduleJobView job) {
+        return R.ok().with("job", jobService.update(convert(job)));
     }
 
     @ApiOperation(value = "删除定时任务", notes = "根据主键删除定时任务")
-    @ApiImplicitParam(name = "jobs", value = "定时任务主键数组", required = true)
+    @ApiImplicitParam(name = "jobIds", value = "定时任务主键数组", required = true, dataType = "List<Long>")
     @DeleteMapping
-    public R delete(@RequestBody List<Long> jobs) {
-        jobService.deleteBatch(jobs);
+    public R delete(@RequestBody List<Long> jobIds) {
+        jobService.deleteBatch(jobIds);
         return R.ok();
     }
 
     @ApiOperation(value = "执行定时任务", notes = "根据主键执行定时任务")
-    @ApiImplicitParam(name = "jobs", value = "定时任务主键数组", required = true)
+    @ApiImplicitParam(name = "jobIds", value = "定时任务主键数组", required = true, dataType = "List<Long>")
     @PutMapping("/run")
-    public R run(@RequestBody List<Long> jobs) {
-        jobService.run(jobs);
+    public R run(@RequestBody List<Long> jobIds) {
+        jobService.run(jobIds);
         return R.ok();
     }
 
     @ApiOperation(value = "暂停定时任务", notes = "根据主键暂停定时任务")
-    @ApiImplicitParam(name = "jobs", value = "定时任务主键数组", required = true)
+    @ApiImplicitParam(name = "jobIds", value = "定时任务主键数组", required = true, dataType = "List<Long>")
     @PutMapping("/pause")
-    public R pause(@RequestBody List<Long> jobs) {
-        jobService.pause(jobs);
+    public R pause(@RequestBody List<Long> jobIds) {
+        jobService.pause(jobIds);
         return R.ok();
     }
 
     @ApiOperation(value = "恢复定时任务", notes = "根据主键恢复定时任务")
-    @ApiImplicitParam(name = "jobs", value = "定时任务主键数组", required = true)
+    @ApiImplicitParam(name = "jobIds", value = "定时任务主键数组", required = true, dataType = "List<Long>")
     @PutMapping("/resume")
-    public R resume(@RequestBody List<Long> jobs) {
-        jobService.resume(jobs);
+    public R resume(@RequestBody List<Long> jobIds) {
+        jobService.resume(jobIds);
         return R.ok();
     }
 

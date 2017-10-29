@@ -30,7 +30,7 @@ public class RoleEntity extends BaseEntity {
     @Column(name = "tf_remark")
     private String remark;
 
-    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "roles")
     @JsonIgnoreProperties("roles")
     private List<UserEntity> users;
 

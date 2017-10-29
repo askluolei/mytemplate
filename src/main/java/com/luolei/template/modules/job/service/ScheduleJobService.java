@@ -3,6 +3,7 @@ package com.luolei.template.modules.job.service;
 import com.luolei.template.common.utils.Constant;
 import com.luolei.template.common.utils.JpaUtils;
 import com.luolei.template.modules.job.dao.ScheduleJobDao;
+import com.luolei.template.modules.job.dao.ScheduleJobLogDao;
 import com.luolei.template.modules.job.entity.ScheduleJobEntity;
 import com.luolei.template.modules.job.utils.ScheduleUtils;
 import com.luolei.template.modules.job.vo.ScheduleJobView;
@@ -23,7 +24,7 @@ import java.util.Objects;
  * @date 2017/10/14 13:33
  */
 @Service
-@Transactional(rollbackFor = Throwable.class)
+@Transactional
 public class ScheduleJobService {
 
     @Autowired
@@ -31,6 +32,9 @@ public class ScheduleJobService {
 
     @Autowired
     private ScheduleJobDao jobDao;
+
+    @Autowired
+    private ScheduleJobLogDao jobLogDao;
 
     /**
      * 项目启动时，初始化定时器
@@ -92,10 +96,9 @@ public class ScheduleJobService {
         for (Long id : ids) {
             ScheduleUtils.deleteScheduleJob(scheduler, id);
         }
-        List<ScheduleJobEntity> jobs = jobDao.findAll(ids);
-//        JpaUtils.dislink(jobs);
-//        jobs = jobDao.save(jobs);
-        jobDao.delete(jobs);
+        //批量删除不会走 @PreRemove 所以存在外键关联的时候就报错
+        //目前的删除是删除前拦截，断开外键关联，所以会有冗余数据在里面
+        jobDao.delete(jobDao.findAll(ids));
     }
 
     public List<ScheduleJobEntity> updateBatch(List<ScheduleJobEntity> scheduleJobs) {
